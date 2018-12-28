@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ import com.niit.CosmeticsBackend.Model.Product;
 import com.niit.CosmeticsBackend.Model.Shipping;
 import com.niit.CosmeticsBackend.Model.User;
 
+@Controller
 public class OrderController {
 	
 	@Autowired
@@ -87,14 +89,19 @@ public class OrderController {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			String currusername = authentication.getName();
-			user = userDao.getuser(currusername);
+			user = userDao.getUseremail(currusername);
 			cart = user.getCart();
-			
+			product=null;			
 			
 //			session.setAttribute("products", product1);			
-			cartItems= cartItemsDao.get(cart.getCartId());
-		
-				
+			cartItems1= cartItemsDao.getCartItemslist(cart.getCartId());
+			if(cartItems1==null||cartItems1.isEmpty())
+			{
+				return "redirect:/viewcart";
+			}
+			else
+			{
+								
 				billing = billingDao.getUser(user.getUserId());
 				List<Shipping> shippingAddresies = shippingDao.getaddbyuser(user.getUserId());
 				
@@ -103,23 +110,25 @@ public class OrderController {
 				model.addAttribute("shippingAddresies", shippingAddresies);
 				model.addAttribute("shippingAddress", new Shipping());
 				session.setAttribute("p", product);
+				model.addAttribute("prot", product);
 			}
+		}
 			return "addressorder";
 		} 
 	
 	
 
-	@RequestMapping("/Buy/{p_id}/{ci_id}")
-	public String order(@PathVariable("p_id") String id, Model model,HttpSession session) {
+	@RequestMapping("/Buy/{productId}/{cartItemsId}")
+	public String order(@PathVariable("productId") String id,@PathVariable("cartItemsId") String id2, Model model,HttpSession session) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (!(authentication instanceof AnonymousAuthenticationToken)) {
 			String currusername = authentication.getName();
 			user = userDao.getUseremail(currusername);
 			cart = user.getCart();
-			cartItems=null;
+			cartItems1=null;
 			product = productDao.getproduct(id);
 			billing = billingDao.getUser(user.getUserId());
-			
+			cartItems=cartItemsDao.getCartItems(id2);
 			System.out.println(billing.getCountry());
 //			for(Billing b: billing)
 //			{
@@ -133,7 +142,7 @@ public class OrderController {
 			model.addAttribute("shippingAddresies", shippingAddresies);
 			model.addAttribute("shippingAddress", new Shipping());
 			session.setAttribute("p", product);
-			
+			model.addAttribute("cartItems", cartItems);
 			return "addressorder";
 		} else {
 			return "redirect:/";
@@ -152,7 +161,7 @@ public class OrderController {
 		model.addAttribute("billing", billing);
 		model.addAttribute("shippingAddress", shipping);
 		model.addAttribute("prot", product);
-		model.addAttribute("cartItems",cartItems);
+		model.addAttribute("cartItems",cartItems1);
 		model.addAttribute("cart",cart);
 		return "orderconfirm";
 	}
@@ -198,7 +207,7 @@ public class OrderController {
 				  break;	
 		     }
 			else{
-				return "redirect:/pay";
+				return "redirect:/orderconfirmation";
 				
 			}
 		case 2:
@@ -238,7 +247,7 @@ public class OrderController {
 //		order.setPay(pay);
 		order.setUser(user);
 		System.out.println(524);
-		if (cartItems == null) 
+		if (cartItems1 == null) 
 		{
 			order.setGrandTotal(product.getProductPrice());
 			orderDao.saveorupdateOrder(order);
@@ -249,7 +258,7 @@ public class OrderController {
 			cart.setTotalItems(cart.getTotalItems() - 1);
 			session.setAttribute("items", cart.getTotalItems());
 			cartDao.saveorupdateCart(cart);
-//			cartItemsDao.delete(cartItemsDao.getlistall(cart.getCartId(),product.getProductId()).getCarId());
+			cartItemsDao.delete(cartItemsDao.getlistall(cart.getCartId(),product.getProductId()).getCartItemsId());
 			System.out.println(324);
 		}
 		else

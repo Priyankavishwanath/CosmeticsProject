@@ -91,24 +91,59 @@ return CartItems;
 
 	@Override
 	public List<CartItems> getlist() {
-		// TODO Auto-generated method stub
-		return null;
+		List<CartItems> cartitms = (List<CartItems>) sessionFactory.getCurrentSession().createCriteria(CartItems.class)
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+
+		return cartitms;
 	}
 
 
 
 	@Override
 	public List<CartItems> getCartItemslist(String cartId) {
-		// TODO Auto-generated method stub
-		return null;
+		String Sq1="From CartItems where cartId='"+cartId+"'";
+		Query q1=sessionFactory.getCurrentSession().createQuery(Sq1);
+		@SuppressWarnings("unchecked")
+		List<CartItems> list=(List<CartItems>)q1.list();
+		if(list==null||list.isEmpty())
+		{
+			System.out.println("Item is not found");
+			return null;
+		}
+		else
+		{
+			return list;
+		}
+		
 	}
 
 
 
 	@Override
 	public CartItems getlistall(String cartId, String productId) {
-		// TODO Auto-generated method stub
-		return null;
+		String sql= "from CartItems where cartId='" +cartId+ "'and productId ='" +productId+ "'";
+		Query q1= sessionFactory.getCurrentSession().createQuery(sql);
+		@SuppressWarnings("unchecked")
+		List<CartItems> list=(List<CartItems>) q1.list();
+		if(list==null || list.isEmpty()){
+			System.out.println("Item is not found");
+			return null;
+		}
+		else
+		{
+			return list.get(0);
+		}
 	}
+
+
+
+	@Override
+	public boolean delete(String cartItemsId) {
+		CartItems c= new CartItems();
+		c.setCartItemsId(cartItemsId);
+		sessionFactory.getCurrentSession().delete(c);
+		return true;
+	}
+	
 }
 	

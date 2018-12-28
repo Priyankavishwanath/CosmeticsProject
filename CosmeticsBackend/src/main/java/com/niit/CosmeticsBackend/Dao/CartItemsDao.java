@@ -12,4 +12,5 @@ public interface CartItemsDao {
 	public CartItems get(String cartId);
 	public List<CartItems> getCartItemslist(String cartId);
 	public CartItems getlistall(String cartId, String productId);
+	public boolean delete(String cartItemsId);
 }

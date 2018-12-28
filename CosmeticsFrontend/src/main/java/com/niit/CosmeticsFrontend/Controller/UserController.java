@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.niit.CosmeticsBackend.Dao.CategoryDao;
 import com.niit.CosmeticsBackend.Dao.UserDao;
 import com.niit.CosmeticsBackend.Model.Cart;
+import com.niit.CosmeticsBackend.Model.Category;
 import com.niit.CosmeticsBackend.Model.User;
 
 @Controller
@@ -20,12 +22,16 @@ public class UserController {
 	User user;
 	@Autowired
 	UserDao userDao;
+	@Autowired
+	CategoryDao categoryDao;
 	
 	@RequestMapping("/User")
 	public ModelAndView userform()
 	{
 		List<User> users=userDao.list();
 		ModelAndView obj=new ModelAndView("User");
+		List<Category> catlist=categoryDao.list();
+		obj.addObject("categories",catlist);
 		obj.addObject("user", new User());
 		obj.addObject("users", users);
 		return obj;

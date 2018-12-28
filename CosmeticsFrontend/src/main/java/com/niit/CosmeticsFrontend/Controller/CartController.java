@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.niit.CosmeticsBackend.Dao.CartDao;
 import com.niit.CosmeticsBackend.Dao.CartItemsDao;
+import com.niit.CosmeticsBackend.Dao.ProductDao;
 import com.niit.CosmeticsBackend.Dao.UserDao;
 import com.niit.CosmeticsBackend.Model.Cart;
 import com.niit.CosmeticsBackend.Model.CartItems;
+import com.niit.CosmeticsBackend.Model.Product;
 import com.niit.CosmeticsBackend.Model.User;
 
+@Controller
 public class CartController {
 //		Product product;
 //		@Autowired 
@@ -39,31 +43,33 @@ public class CartController {
 		CartItems cartItems;
 		@Autowired
 		CartItemsDao cartItemsDao;
+		@Autowired
+		ProductDao productDao;
 		
 		@Autowired
 		HttpSession session;
 		
-		@RequestMapping("/addtocart/{id}")
-		public ModelAndView cart(@PathVariable("id") String id) 
+		@RequestMapping("/addtocart/{productId}")
+		public ModelAndView cart(@PathVariable("productId") String id) 
 		{
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if (!(authentication instanceof AnonymousAuthenticationToken)) {
 				String currusername = authentication.getName();
 		User u = userDao.getUseremail(currusername);
-		if (user == null)
+		if (u == null)
 		{
 			return new ModelAndView("redirect:/");
 		} 
 		else
 		{
 			cart = u.getCart();
-//			Product product1 = productDao.get(id);
+			Product product1 = productDao.getproduct(id);
 			CartItems cartItem = new CartItems();
 			cartItem.setCart(cart);
-//			cartItem.setProduct(product1);
-//			cartItem.setPrice(product1.getPrice());
+			cartItem.setProduct(product1);
+			cartItem.setPrice(product1.getProductPrice());
 			cartItemsDao.saveorupdateCartItems(cartItem);
-//			cart.setGrandtotal(cart.getGrandtotal() + product1.getPrice());
+			cart.setGrandTotal(cart.getGrandTotal() + product1.getProductPrice());
 			cart.setTotalItems(cart.getTotalItems() + 1);
 			cartDao.saveorupdateCart(cart);
 			session.setAttribute("items", cart.getTotalItems());
@@ -107,11 +113,11 @@ public class CartController {
 //			}
 		}
 		
-		@RequestMapping(value="/Remove/{carId}")
-		public ModelAndView RemoveFromCart(@PathVariable("carId") String id)
+		@RequestMapping(value="/Remove/{cartItemsId}")
+		public ModelAndView RemoveFromCart(@PathVariable("cartItemsId") String id)
 		{
 			ModelAndView obj= new ModelAndView("redirect:/viewcart");
-			cartItems=cartItemsDao.get(id);
+			cartItems=cartItemsDao.getCartItems(id);
 			Cart c=cartItems.getCart();
 			c.setGrandTotal(c.getGrandTotal()-cartItems.getPrice());
 			c.setTotalItems(c.getTotalItems()-1);

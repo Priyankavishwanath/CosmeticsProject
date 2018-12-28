@@ -41,6 +41,24 @@ productDescription:<form:input type="text" Description="description" path="produ
 <br>
 productImage:<form:input type="file" Description="description" path="pimg"/><br>
 <br>
+Category
+	<font color="#000000">
+	<form:select path="category.catId" multiple="false">
+	<c1:forEach items="${categories}" var="d">
+	<form:option value="${d.getCatId()} " label="${d.getCatName()}"/>
+	</c1:forEach>
+	</form:select>
+	</font>
+
+Supplier
+	<font  color="#000000">
+	<form:select path="supplier.supplierId" multiple="false">
+	<c1:forEach items="${supplies}" var="s">
+	<form:option value="${s.getSupplierId()}" label="${s.getSupplierName()}"/>
+	</c1:forEach>
+	</form:select>
+	</font>
+	<br>
 
 <input type="submit"
 value="submit">
@@ -74,6 +92,3 @@ value="submit">
 
 
 </body>
-
-
-</html>

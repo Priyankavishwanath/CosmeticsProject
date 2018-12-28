@@ -2,6 +2,7 @@ package com.niit.CosmeticsBackend.Model;
 
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -28,12 +29,12 @@ public class Product {
 	public Product() {
 		this.productId="PRO"+UUID.randomUUID().toString().substring(30).toUpperCase();
 	} 
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "catId")
 	private Category category;
 	
-	@ManyToOne
-	@JoinColumn(name = "supId")
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name = "supplierId")
 	private Supplier supplier;
 
 	public Category getCategory() {

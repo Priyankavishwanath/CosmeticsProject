@@ -23,14 +23,14 @@
 </head>
 <body>
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-inverse" style="background-color:#FBE6EC">
   
     <ul class="nav navbar-nav">
       <li class="active"><a href="<c:url value="/"/>">Home</a></li>
 	<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Categories <span class="caret"></span></a>
         <ul class="dropdown-menu">
-        <c1:forEach items="${categories}" var="cat">
-          <li><a href="<c:url value="/Gallery"/>">${cat.getCatName()}</a></li>
+        <c1:forEach items="${products}" var="prod">
+          <li><a href="<c:url value="/Gallery"/>">${prod.getProductName()}</a></li>
          </c1:forEach>
         </ul>
       </li><c1:if test="${pageContext.request.userPrincipal.name!=null}">
@@ -44,21 +44,25 @@
       </li>
       </security:authorize>
       </c1:if>
-      <li><a href="#"></a></li>
-    </ul>
+      </ul>
       welcome ${pageContext.request.userPrincipal.name}
     <c1:if test="${pageContext.request.userPrincipal.name==null}">
     <ul class="nav navbar-nav navbar-right">
       <li><a href="<c:url value="/User"/>"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href="<c:url value="/login"/>"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-    </ul>
-    </c1:if>
+      <li><a href="<c:url value="/login"/>"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+       
+       </ul>
+           </c1:if>
     
     <c1:if test="${pageContext.request.userPrincipal.name!=null}">
     <ul class="nav navbar-nav navbar-right">
      <li><a href="<c:url value="/j_spring_security_logout"/>"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
     </ul>
     </c1:if>
+    <ul class="nav navbar-nav navbar-right">
+    <li><a href="<c:url value="/viewcart"/>"><span class="glyphicon glyphicon-shopping-cart">${items}</span></a>
+    </li>
+    </ul>
   </div>
 </nav>
 

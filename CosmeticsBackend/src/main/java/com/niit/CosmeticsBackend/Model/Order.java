@@ -3,6 +3,7 @@ package com.niit.CosmeticsBackend.Model;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,11 +24,11 @@ private double grandTotal;
 public Order() {
 	this.orderId="order"+UUID.randomUUID().toString().substring(30).toUpperCase();
 }
-@OneToOne
+@OneToOne(cascade=CascadeType.ALL)
 @JoinColumn(name="billId")
 private Billing Billing;
 
-@OneToOne
+@OneToOne(cascade=CascadeType.ALL)
 @JoinColumn(name="shipId")
 private Shipping shipping;
 

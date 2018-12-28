@@ -2,11 +2,14 @@
     pageEncoding="ISO-8859-1"%>
     <%@taglib prefix="c" uri="http://www.springframework.org/tags" %>
      <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@include file="header.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
+
 <body>
+
 <c:url value="/j_spring_security_check" var="login"/>
-<form:form action="${login}" method="post" target="_blank">
+<form:form action="${login}" method="post">
 <fieldset style="margin-right:800px;">
 <legend> Login Form</legend>
 Username:<input type ="text" name="j_username"/><br>

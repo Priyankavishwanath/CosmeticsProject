@@ -16,6 +16,7 @@ import com.niit.CosmeticsBackend.Model.Billing;
 @Repository("billingDao")
 @Transactional
 @EnableTransactionManagement
+
 public class BillingDaoImpl implements BillingDao {
 	@Autowired
 	SessionFactory sessionFactory;
